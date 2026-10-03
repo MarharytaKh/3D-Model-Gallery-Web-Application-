@@ -1,0 +1,19 @@
+[DEFAULT]
+bantime = 10m
+findtime = 10m
+maxretry = 3
+backend = polling
+
+[sshd]
+enabled = true
+port = 22
+filter = sshd
+logpath = /var/log/auth.log
+
+[sshd-ddos]
+enabled = false
+
+
+
+
+ 

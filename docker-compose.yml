@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  db:
+    build: ./db
+    container_name: soproject-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: soproject
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - internal
+
+  app:
+    build: ./app
+    container_name: soproject-app
+    volumes:
+      - ./app/models:/app/models
+    environment:
+      DB_HOST: db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: soproject
+    networks:
+      - internal
+
+
+  nginx:
+    build: ./nginx
+    container_name: soproject-nginx
+    ports:
+      - "80:80"
+      - "2222:22"
+    depends_on:
+      - app
+    networks:
+      - internal
+
+
+networks:
+  internal:
+    name: soproject_internal
+
+volumes:
+  db_data:
+
+
+ 

@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Model Gallery</title>
+    <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+    <input id="searchInput" type="text" placeholder="Search models..." />
+
+    <button id="favToggle">⭐</button>
+
+    <select id="sortSelect">
+        <option value="date-desc">Newest</option>
+        <option value="date-asc">Oldest</option>
+        <option value="name-asc">Name A–Z</option>
+        <option value="name-desc">Name Z–A</option>
+        <option value="size-desc">Size ↓</option>
+        <option value="size-asc">Size ↑</option>
+    </select>
+
+    <div id="modelCounter">
+        Models: <span id="modelCount">0</span>
+    </div>
+
+    <div id="gallery"></div>
+
+    <div id="modelViewer" class="hidden">
+        <button id="closeViewer">x</button>
+        <canvas id="viewerCanvas"></canvas>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
+
+
+
