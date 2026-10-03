@@ -1,0 +1,341 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 98vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #923d1e;
+    overflow: hidden;
+}
+
+#searchInput {
+    position: fixed;
+    top: 8px;
+    left: 300px;
+    width: 820px;
+    height: 38px;
+    padding: 0 12px;
+    font-size: 14px;
+    font-family: 'Inter', system-ui, sans-serif;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    outline: none;
+    background: white;
+    z-index: 100;
+}
+    #searchInput:focus {
+        border-color: #666;
+    }
+
+#favToggle {
+    position: fixed;
+    top: 8px;
+    left: 1265px;
+    height: 38px;
+    width: 38px;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    background: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+    #favToggle.active {
+        background: gold;
+    }
+
+#sortSelect {
+    position: fixed;
+    top: 8px;
+    left: 1150px;
+    height: 38px;
+    padding: 0 10px;
+    font-size: 14px;
+    font-family: 'Inter', system-ui, sans-serif;
+    border-radius: 8px;
+    border: 1px solid #bbb;
+    background: white;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.star {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-size: 18px;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+#modelCounter {
+    position: fixed;
+    top: 8px;
+    left: 190px;
+    height: 23px;
+    background: white;
+    color: #232323ff;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', system-ui, sans-serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 100;
+}
+
+    #modelCounter span {
+        font-weight: 600;
+    }
+
+#gallery {
+    position: absolute;
+    top: 50px;
+    left: 10px;
+    width: 1490px;
+    height: calc(100vh - 65px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-content: flex-start;
+    align-items: flex-start;
+    background: #f0f0f0;
+    padding: 10px;
+    overflow-y: auto;
+    border-radius: 8px;
+}
+
+.gallery-item {
+    width: 280px;
+    background: #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+}
+
+    .gallery-item canvas {
+        width: 100%;
+        height: 200px;
+        display: block;
+    }
+
+.model-label {
+    width: 100%;
+    padding: 6px 14px;
+    background: white;
+    color: #000;
+    font-size: 14px;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.note-preview {
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid #ddd;
+    font-size: 12px;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    cursor: pointer;
+    color: #333;
+    height: auto;
+}
+
+.gallery-item.add-tile {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.6);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.gallery-item:hover .delete-btn {
+    opacity: 1;
+}
+
+.star {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    font-size: 18px;
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.gallery-item.fav .star {
+    opacity: 1;
+    filter: drop-shadow(0 0 4px gold);
+}
+
+/*MODEL VIEWER*/
+
+#modelViewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #00000089;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+    #modelViewer.hidden {
+        display: none;
+    }
+
+    #modelViewer canvas {
+        width: 80%;
+        height: 80%;
+        border-radius: 8px;
+        background: #656565;
+    }
+
+#closeViewer {
+    position: absolute;
+    top: 80px;
+    right: 190px;
+    font-size: 24px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    z-index: 1001;
+}
+/*VIEWER SIDE PANEL*/
+#viewerPanel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px;
+    height: 100%;
+    background: #1c1c1cff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* big color picker */
+#bgColorPicker {
+    width: 175px;
+    height: 52px;
+    border: double;
+    border-color: #00000089;
+    padding: 0;
+    cursor: pointer;
+    background: none;
+}
+
+.viewer-btn {
+    background: none;
+    border: none;
+    padding: 10px 4px;
+    font-family: inherit;
+    font-size: 18px;
+    font-weight: 500;
+    color: #ccc;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.15s, background-color 0.15s;
+}
+
+    .viewer-btn:hover {
+        color: #000000;
+        background-color: #656565;
+    }
+
+    .viewer-btn:active {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+#modelInfo {
+    position: absolute;
+    bottom: 85px;
+    right: 160px;
+    background: #1c1c1cc8;
+    color: white;
+    font-family: system-ui, sans-serif;
+    font-size: 12px;
+    line-height: 1.4;
+    padding: 12px 14px;
+    border-radius: 8px;
+    min-width: 180px;
+    pointer-events: none;
+}
+
+    #modelInfo b {
+        font-weight: 600;
+        color: #cccccc;
+    }
+
+
+/*NOTES MODAL*/
+
+#notesOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+#notesModal {
+    background: white;
+    width: 400px;
+    height: 260px;
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+    #notesModal textarea {
+        flex: 1;
+        resize: none;
+        font-size: 14px;
+        padding: 8px;
+        margin-top: 20px;
+    }
+
+#saveNotes {
+    margin-top: 10px;
+    align-self: flex-end;
+}
+
+#closeNotes {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
