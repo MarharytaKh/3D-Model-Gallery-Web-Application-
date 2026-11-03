@@ -6,10 +6,12 @@
     <link rel="stylesheet" href="/src/style.css" />
 </head>
 <body>
+    <label for="searchInput" class="visually-hidden">Search models</label>
     <input id="searchInput" type="text" placeholder="Search models..." />
 
-    <button id="favToggle">⭐</button>
+    <button id="favToggle" aria-label="Show only favorites">⭐</button>
 
+    <label for="sortSelect" class="visually-hidden">Sort models</label>
     <select id="sortSelect">
         <option value="date-desc">Newest</option>
         <option value="date-asc">Oldest</option>
@@ -26,7 +28,7 @@
     <div id="gallery"></div>
 
     <div id="modelViewer" class="hidden">
-        <button id="closeViewer">x</button>
+        <button id="closeViewer" aria-label="Close viewer">x</button>
         <canvas id="viewerCanvas"></canvas>
     </div>
 

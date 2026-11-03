@@ -12,6 +12,18 @@ const PORT = 3001;
 const ROOT = process.cwd();
 const MODELS_DIR = path.join(ROOT, 'models');
 const FRONTEND_DIST = path.join(ROOT, 'frontendGaleria', 'dist');
+const MAX_UPLOAD_BYTES = 100 * 1024 * 1024; // matches client_max_body_size in nginx.conf
+
+// Accepts only a plain "<name>.glb" file name and returns its absolute path
+// inside MODELS_DIR. Returns null for anything else (e.g. "../server.js").
+function resolveModelPath(name) {
+    if (typeof name !== 'string') return null;
+    const base = path.basename(name);
+    if (base !== name || !/^[\w\-. ]+\.glb$/i.test(base)) return null;
+    const fullPath = path.resolve(MODELS_DIR, base);
+    if (!fullPath.startsWith(MODELS_DIR + path.sep)) return null;
+    return fullPath;
+}
 
 // ---------- DB ----------
 const pool = new Pool({
@@ -55,35 +67,55 @@ async function initDatabase() {
     console.log('DB initialized from models folder');
 }
 
-initDatabase();
+initDatabase().catch(err => {
+    console.error('DB init failed:', err);
+    process.exit(1);
+});
 
 
 // ---------- MIDDLEWARE ----------
-app.use(express.json());
+app.use(express.json({ limit: '100kb' }));
 app.use('/models', express.static(MODELS_DIR));
 app.use(express.static(FRONTEND_DIST));
 
 // ---------- UPLOAD ----------
 const storage = multer.diskStorage({
     destination: (_, __, cb) => cb(null, MODELS_DIR),
-    filename: (_, file, cb) => cb(null, file.originalname),
+    filename: (_, file, cb) => cb(null, path.basename(file.originalname)),
 });
 
-const upload = multer({ storage });
+const upload = multer({
+    storage,
+    limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+    fileFilter: (_, file, cb) => {
+        if (resolveModelPath(file.originalname)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only .glb files with a simple file name are allowed'));
+        }
+    },
+});
 
 app.post('/api/upload', upload.single('model'), async (req, res) => {
-    console.log('UPLOAD FILE:', req.file);
+    if (!req.file) {
+        return res.status(400).json({ error: 'no file uploaded' });
+    }
 
-    const { originalname, size } = req.file;
+    try {
+        const { filename, size } = req.file;
 
-    await pool.query(
-        `INSERT INTO models (filename, size)
-     VALUES ($1, $2)
-     ON CONFLICT (filename) DO NOTHING`,
-        [originalname, size]
-    );
+        await pool.query(
+            `INSERT INTO models (filename, size)
+         VALUES ($1, $2)
+         ON CONFLICT (filename) DO NOTHING`,
+            [filename, size]
+        );
 
-    res.json({ filename: originalname });
+        res.json({ filename });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'upload failed' });
+    }
 });
 
 
@@ -107,7 +139,10 @@ app.get('/api/models', async (_, res) => {
 app.delete('/api/models/:name', async (req, res) => {
     try {
         const filename = req.params.name;
-        const filePath = path.join(MODELS_DIR, filename);
+        const filePath = resolveModelPath(filename);
+        if (!filePath) {
+            return res.status(400).json({ error: 'invalid file name' });
+        }
 
         await pool.query(
             `DELETE FROM models WHERE filename = $1`,
@@ -123,6 +158,13 @@ app.delete('/api/models/:name', async (req, res) => {
         console.error(err);
         res.status(500).json({ error: 'delete failed' });
     }
+});
+
+// ---------- ERRORS ----------
+// eslint-disable-next-line no-unused-vars
+app.use('/api', (err, req, res, next) => {
+    const status = err.code === 'LIMIT_FILE_SIZE' ? 413 : 400;
+    res.status(status).json({ error: err.message });
 });
 
 // ---------- SPA ----------
