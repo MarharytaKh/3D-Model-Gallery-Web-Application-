@@ -4,11 +4,11 @@ WORKDIR /app
 
 # backend deps
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci --omit=dev --ignore-scripts
 
 # frontend
 COPY frontendGaleria ./frontendGaleria
-RUN cd frontendGaleria && npm install && npm run build
+RUN cd frontendGaleria && npm ci --ignore-scripts && npm run build
 
 # backend files
 COPY server.js .

@@ -23,10 +23,13 @@ favToggle.onclick = () => {
 
 createAddTile();
 createNotesModal();
-loadModels();
+loadModels().catch(err => console.error('Failed to load models:', err));
 
 async function loadModels() {
     const res = await fetch('/api/models');
+    if (!res.ok) {
+        throw new Error(`GET /api/models failed with status ${res.status}`);
+    }
     allModels = await res.json();
     renderFilteredModels();
 }
@@ -133,7 +136,7 @@ function createPreview(modelUrl) {
     deleteBtn.onclick = async (e) => {
         e.stopPropagation();
 
-        const res = await fetch(`/api/models/${fileName}`, {
+        const res = await fetch(`/api/models/${encodeURIComponent(fileName)}`, {
             method: 'DELETE'
         });
 

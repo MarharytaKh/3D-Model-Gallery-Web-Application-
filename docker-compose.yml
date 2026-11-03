@@ -5,9 +5,9 @@ services:
     build: ./db
     container_name: soproject-db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: soproject
+      POSTGRES_USER: ${DB_USER:?set DB_USER in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      POSTGRES_DB: ${DB_NAME:?set DB_NAME in .env}
     volumes:
       - db_data:/var/lib/postgresql/data
     networks:
@@ -20,9 +20,9 @@ services:
       - ./app/models:/app/models
     environment:
       DB_HOST: db
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: soproject
+      DB_USER: ${DB_USER:?set DB_USER in .env}
+      DB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      DB_NAME: ${DB_NAME:?set DB_NAME in .env}
     networks:
       - internal
 

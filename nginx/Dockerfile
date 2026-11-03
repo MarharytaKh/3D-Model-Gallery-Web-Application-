@@ -2,8 +2,9 @@ FROM nginx:alpine
 
 RUN apk add --no-cache openssh fail2ban iptables bash
 
+# SSH host keys are generated when the container starts (see CMD),
+# so no private key is baked into the image layers.
 RUN mkdir /var/run/sshd \
- && ssh-keygen -A \
  && touch /var/log/auth.log
 
 COPY nginx.conf /etc/nginx/nginx.conf
@@ -29,6 +30,7 @@ RUN chown -R nginxuser:nginxuser /home/nginxuser/.ssh \
 EXPOSE 80 22
 
 CMD ["sh", "-c", "\
+ssh-keygen -A && \
 mkdir -p /var/run/fail2ban && \
 fail2ban-server -b && \
 /usr/sbin/sshd && \
